@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class QAP:
     def __init__(self, assignments, distances,
                  flows, threshold=None):
@@ -81,11 +80,11 @@ class QAP:
                 self.T[2][0][k, l] = False
                 self.T[2][0][l, k] = False
 
-        def _saveTable(self):
-            R = []
-            for row in self.T:
-                R.append([m.copy() for m in row])
-            return R
+    def _saveTable(self):
+        R = []
+        for row in self.T:
+            R.append([m.copy() for m in row])
+        return R
 
     def optimize(self):
         saved = []
@@ -100,14 +99,12 @@ class QAP:
                 return True
         return False
 
-        def listing(self):
-            'PRE: There is one and only one solution'
-            'POST: The assingment is returned'
-            A = {}
-            X, Y = self.T[0][0].nonzero()
-            for i, x in enumerate(X):
-                A[x] = Y[i]
-            return A
+    def listing(self):
+        A = {}
+        X, Y = self.T[0][0].nonzero()
+        for i, x in enumerate(X):
+            A[x] = Y[i]
+        return A
 
     def evaluate(self, S):
         cost = 0
