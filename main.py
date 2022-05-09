@@ -36,17 +36,15 @@ class QAP:
         self.T[1][1] = self.T[0][2].transpose() * self.T[0][1]
         self.sharp()
 
-        def sharp(self):
-            for i in range(4):
-                self._sharp(list(range(i)) + list(range(i + 1, 4)))
+    def sharp(self):
+        for i in range(4):
+            self._sharp(list(range(i)) + list(range(i + 1, 4)))
 
     def _sharp(self, L3):
         [I, J, K] = L3
         self.T[3 - K][I] &= self.T[3 - J][I] * self.T[3 - K][J]
-        self.T[3 - J][I] &= self.T[3 - K][I] \
-                            * self.T[3 - K][J].transpose()
-        self.T[3 - K][J] &= self.T[3 - J][I].transpose() \
-                            * self.T[3 - K][I]
+        self.T[3 - J][I] &= self.T[3 - K][I] * self.T[3 - K][J].transpose()
+        self.T[3 - K][J] &= self.T[3 - J][I].transpose() * self.T[3 - K][I]
 
     @staticmethod
     def notPermutable(aMatrix):
@@ -115,9 +113,15 @@ class QAP:
                 cost += self.F[i, j] * self.D[S[i], S[j]]
         return cost
 
-    def test1(A, D, F):
-        qap = QAP(A, D, F)
-        if qap.optimize():
-            result = qap.listing()
-            return result, qap.evaluate(result)
-        return None, None
+def test1(A, D, F):
+    qap = QAP(A, D, F)
+    if qap.optimize():
+        result = qap.listing()
+        return result, qap.evaluate(result)
+    return None, None
+
+def main():
+    print(test1([[9, 51, 3], [2, 4, 1], [6, 22, 7]],[[0, 70, 2], [7, 0, 43], [2, 41, 0]],[[0, 31, 6], [3, 0, 42], [6, 4, 0]]))
+
+if __name__ == '__main__':
+    main()
