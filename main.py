@@ -2,13 +2,13 @@ import numpy as np
 
 class QAP:
     def __init__(self, assignments, distances,
-                 flows, threshold=None):
+                 flows):
         self.A = np.matrix(assignments) # Матрица стоимости назначений
         self.D = np.matrix(distances) # Матрица стоимости перевозки
         self.F = np.matrix(flows) # Количество единиц ресурса
         self.T = [[None, None, None], [None, None], [None]]
         self.L = self.costs()
-        self.MAX = (self.L[0][0] + 1) if threshold is None else threshold
+        self.MAX = (self.L[0][0] + 1)
         self.establishThreshold(self.MAX)
 
     def costs(self):
