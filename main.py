@@ -3,13 +3,12 @@ import numpy as np
 class QAP:
     def __init__(self, assignments, distances,
                  flows, threshold=None):
-        self.A = np.matrix(assignments)
-        self.D = np.matrix(distances)
-        self.F = np.matrix(flows)
+        self.A = np.matrix(assignments) # Матрица стоимости назначений
+        self.D = np.matrix(distances) # Матрица стоимости перевозки
+        self.F = np.matrix(flows) # Количество единиц ресурса
         self.T = [[None, None, None], [None, None], [None]]
         self.L = self.costs()
-        self.MAX = (self.L[0][0] + 1) if threshold is None \
-            else threshold
+        self.MAX = (self.L[0][0] + 1) if threshold is None else threshold
         self.establishThreshold(self.MAX)
 
     def costs(self):
@@ -97,9 +96,10 @@ class QAP:
                 return True
         return False
 
+    # Возвращение словаря
     def listing(self):
-        A = {}
-        X, Y = self.T[0][0].nonzero()
+        A = {} # Пустой словарь
+        X, Y = self.T[0][0].nonzero() # Возвращает элемент не равный нулю
         for i, x in enumerate(X):
             A[x] = Y[i]
         return A
@@ -117,15 +117,16 @@ class QAP:
 
         return cost
 
-def test1(a, d, f):
-    qap = QAP(a, d, f)
+# Запуск алгоритма
+def start(a, d, f):
+    qap = QAP(a, d, f) # создание класса
     if qap.optimize():
         result = qap.listing()
         return result, qap.evaluate(result) # result - словарь с расположением i в j локацию
     return None, None
 
 def main():
-    print(test1([[9, 51, 3], [2, 4, 1], [6, 22, 7]],[[0, 70, 2], [7, 0, 43], [2, 41, 0]],[[0, 31, 6], [3, 0, 42], [6, 4, 0]]))
+    print(start([[9, 51, 3], [2, 4, 1], [6, 22, 7]],[[0, 70, 2], [7, 0, 43], [2, 41, 0]],[[0, 31, 6], [3, 0, 42], [6, 4, 0]]))
 
 if __name__ == '__main__':
     main()
