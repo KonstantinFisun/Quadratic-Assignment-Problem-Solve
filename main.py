@@ -6,11 +6,12 @@ class QAP:
         self.A = np.matrix(assignments) # Матрица стоимости назначений
         self.D = np.matrix(distances) # Матрица стоимости перевозки
         self.F = np.matrix(flows) # Количество единиц ресурса
-        self.T = [[None, None, None], [None, None], [None]]
-        self.L = self.costs()
-        self.MAX = (self.L[0][0] + 1)
+        self.T = [[None, None, None], [None, None], [None]] # Таблица 0: A A*F^t D   1: D^t*A D^t*A*F^t   2: F
+        self.L = self.costs() # Список слагаемых по убыванию
+        self.MAX = (self.L[0][0] + 1) # Порог
         self.establishThreshold(self.MAX)
 
+    # Cписок слагаемых, которые будут упорядочены от большего к меньшему
     def costs(self):
         L = [] # Пустой список
         N = self.A.shape[0] # Возвращает размер кортежа
@@ -30,23 +31,24 @@ class QAP:
         return L
 
     def establishThreshold(self, th):
+        # Установка значений в треугольную матрицу
         self.T[0][0] = self.A < th
         self.T[0][2] = self.D < th
         self.T[2][0] = self.F < th
         self.T[0][1] = self.T[0][0] * self.T[2][0].transpose()
         self.T[1][0] = self.T[0][2].transpose() * self.T[0][0]
         self.T[1][1] = self.T[0][2].transpose() * self.T[0][1]
-        self.sharp()
+        # self.sharp()
 
-    def sharp(self):
-        for i in range(4):
-            self._sharp(list(range(i)) + list(range(i + 1, 4)))
-
-    def _sharp(self, L3):
-        [I, J, K] = L3
-        self.T[3 - K][I] &= self.T[3 - J][I] * self.T[3 - K][J]
-        self.T[3 - J][I] &= self.T[3 - K][I] * self.T[3 - K][J].transpose()
-        self.T[3 - K][J] &= self.T[3 - J][I].transpose() * self.T[3 - K][I]
+    # def sharp(self):
+    #     for i in range(4):
+    #         self._sharp(list(range(i)) + list(range(i + 1, 4)))
+    #
+    # def _sharp(self, L3):
+    #     [I, J, K] = L3
+    #     self.T[3 - K][I] &= self.T[3 - J][I] * self.T[3 - K][J]
+    #     self.T[3 - J][I] &= self.T[3 - K][I] * self.T[3 - K][J].transpose()
+    #     self.T[3 - K][J] &= self.T[3 - J][I].transpose() * self.T[3 - K][I]
 
     @staticmethod
     def notPermutable(aMatrix):
@@ -91,7 +93,7 @@ class QAP:
         for X in self.L:
             saveT = self._saveTable()
             self._break(X[1])
-            self.sharp()
+            # self.sharp()
             if self.noSolution():
                 saved.append(X)
                 self.T = saveT
