@@ -104,20 +104,24 @@ class QAP:
             A[x] = Y[i]
         return A
 
-    def evaluate(self, S):
+    # Целевая функция
+    def evaluate(self, s):
         cost = 0
-        for i, site in S.items():
-            cost += self.A[site, i]
-        for i in range(1, len(S)):
+        for i, site in s.items(): # i - объект, site - расположение
+            cost += self.A[site, i] # Находим сумма стоимости расположений объекта
+
+        # f(i,j)*d(pi,pj)
+        for i in range(1, len(s)):
             for j in range(i):
-                cost += self.F[i, j] * self.D[S[i], S[j]]
+                cost += self.F[i, j] * self.D[s[i], s[j]]
+
         return cost
 
-def test1(A, D, F):
-    qap = QAP(A, D, F)
+def test1(a, d, f):
+    qap = QAP(a, d, f)
     if qap.optimize():
         result = qap.listing()
-        return result, qap.evaluate(result)
+        return result, qap.evaluate(result) # result - словарь с расположением i в j локацию
     return None, None
 
 def main():
