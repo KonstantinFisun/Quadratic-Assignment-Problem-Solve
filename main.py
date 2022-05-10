@@ -12,18 +12,21 @@ class QAP:
         self.establishThreshold(self.MAX)
 
     def costs(self):
-        L = []
-        N = self.A.shape[0]
+        L = [] # Пустой список
+        N = self.A.shape[0] # Возвращает размер кортежа
+        # Полная стоимость транспортировки из i-ого объекта в j-й (fij · dlk)
         for i in range(1, N):
             for j in range(i):
                 for k in range(1, N):
                     for l in range(k):
                         L.append((self.D[i, j] * self.F[k, l],
                                   (i, j, k, l)))
+
+        # Добавление стоимости размещения
         for i in range(N):
             for j in range(N):
                 L.append((self.A[i, j], (i, j)))
-        L.sort(reverse=True)
+        L.sort(reverse=True) # сортировка по убыванию
         return L
 
     def establishThreshold(self, th):
