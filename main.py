@@ -27,6 +27,7 @@ class QAP:
         for i in range(N):
             for j in range(N):
                 L.append((self.A[i, j], (i, j)))
+        print(L.sort(reverse=True))
         L.sort(reverse=True) # сортировка по убыванию
         return L
 
@@ -38,17 +39,17 @@ class QAP:
         self.T[0][1] = self.T[0][0] * self.T[2][0].transpose()
         self.T[1][0] = self.T[0][2].transpose() * self.T[0][0]
         self.T[1][1] = self.T[0][2].transpose() * self.T[0][1]
-        # self.sharp()
+        self.sharp()
 
-    # def sharp(self):
-    #     for i in range(4):
-    #         self._sharp(list(range(i)) + list(range(i + 1, 4)))
-    #
-    # def _sharp(self, L3):
-    #     [I, J, K] = L3
-    #     self.T[3 - K][I] &= self.T[3 - J][I] * self.T[3 - K][J]
-    #     self.T[3 - J][I] &= self.T[3 - K][I] * self.T[3 - K][J].transpose()
-    #     self.T[3 - K][J] &= self.T[3 - J][I].transpose() * self.T[3 - K][I]
+    def sharp(self):
+        for i in range(4):
+            self._sharp(list(range(i)) + list(range(i + 1, 4)))
+
+    def _sharp(self, L3):
+        [I, J, K] = L3
+        self.T[3 - K][I] &= self.T[3 - J][I] * self.T[3 - K][J]
+        self.T[3 - J][I] &= self.T[3 - K][I] * self.T[3 - K][J].transpose()
+        self.T[3 - K][J] &= self.T[3 - J][I].transpose() * self.T[3 - K][I]
 
     @staticmethod
     def notPermutable(aMatrix):
@@ -93,7 +94,7 @@ class QAP:
         for X in self.L:
             saveT = self._saveTable()
             self._break(X[1])
-            # self.sharp()
+            self.sharp()
             if self.noSolution():
                 saved.append(X)
                 self.T = saveT
@@ -127,8 +128,10 @@ def start(a, d, f):
     qap = QAP(a, d, f) # создание класса
     if qap.optimize():
         result = qap.listing()
+        print(qap.evaluate({0: 0, 1: 2, 2: 1}))
         return result, qap.evaluate(result) # result - словарь с расположением i в j локацию
     return None, None
+
 
 def main():
     print(start([[9, 51, 3], [2, 4, 1], [6, 22, 7]],[[0, 70, 2], [7, 0, 43], [2, 41, 0]],[[0, 31, 6], [3, 0, 42], [6, 4, 0]]))
